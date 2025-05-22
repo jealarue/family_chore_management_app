@@ -86,7 +86,7 @@ A web application for managing family chores with a points/rewards system. This 
 1.  Clone the repository:
 
     ```bash
-    git clone https://github.com/jealarue/family-chore-management-app.git
+    git clone https://github.com/jealarue/family_chore_management_app.git
     cd family-chore-management-app
     ```
 2.  Install dependencies:
@@ -147,7 +147,7 @@ The application is containerized using Docker, which simplifies deployment and e
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/jealarue/family-chore-management-app.git
+   git clone https://github.com/jealarue/family_chore_management_app.git
    cd family-chore-management-app
    ```
 

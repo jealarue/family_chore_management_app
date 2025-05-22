@@ -1,4 +1,4 @@
-# FamilyChore Management App
+# Family Chore Management App
 
 ![Project Screenshot](link-to-your-screenshot.png)
 

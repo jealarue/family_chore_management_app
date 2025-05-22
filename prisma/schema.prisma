@@ -1,0 +1,125 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+    // Removed absolute path to make it work in Docker
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String           @id @default(cuid())
+  name           String
+  email          String           @unique
+  password       String
+  role           Role             @default(USER)
+  points         Int              @default(0)
+  totalEarned    Float            @default(0)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  assignedTasks  Task[]           @relation("AssignedTo")
+  completedTasks TaskCompletion[]
+  notifications  Notification[]
+  rewards        Reward[]
+  penalties      Penalty[]
+}
+
+enum Role {
+  ADMIN
+  SUB_ADMIN
+  USER
+}
+
+model Task {
+  id              String           @id @default(cuid())
+  title           String
+  description     String?
+  pointsValue     Int
+  monetaryValue   Float            @default(0)
+  dueDate         DateTime?
+  recurring       Boolean          @default(false)
+  recurringPeriod String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  assignedTo      User?            @relation("AssignedTo", fields: [assignedToId], references: [id])
+  assignedToId    String?
+  completions     TaskCompletion[]
+  category        Category         @relation(fields: [categoryId], references: [id])
+  categoryId      String
+}
+
+model TaskCompletion {
+  id            String    @id @default(cuid())
+  task          Task      @relation(fields: [taskId], references: [id])
+  taskId        String
+  user          User      @relation(fields: [userId], references: [id])
+  userId        String
+  completedAt   DateTime  @default(now())
+  verifiedAt    DateTime?
+  verifiedById  String?
+  pointsEarned  Int
+  moneyEarned   Float
+  quality       Int?      @default(3) // 1-5 rating
+  notes         String?
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  color       String   @default("#4F46E5")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  tasks       Task[]
+}
+
+model Reward {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  pointsCost  Int
+  moneyCost   Float    @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  claimedBy   User?    @relation(fields: [claimedById], references: [id])
+  claimedById String?
+  claimedAt   DateTime?
+}
+
+model Penalty {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  pointsLost  Int
+  moneyLost   Float    @default(0)
+  createdAt   DateTime @default(now())
+  appliedTo   User     @relation(fields: [appliedToId], references: [id])
+  appliedToId String
+  reason      String?
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+}
+
+model Settings {
+  id                 String   @id @default(cuid())
+  pointToMoneyRatio  Float    @default(0.1) // $0.10 per point
+  defaultTaskPoints  Int      @default(10)
+  bonusThreshold     Int      @default(100) // Points needed for bonus
+  bonusAmount        Float    @default(5)   // $5 bonus
+  penaltyMultiplier  Float    @default(0.5) // 50% reduction for penalties
+  updatedAt          DateTime @updatedAt
+}

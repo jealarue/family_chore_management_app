@@ -12,6 +12,11 @@ A web application for managing family chores with a points/rewards system. This 
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
   - [Initial Setup](#initial-setup)
+- [Docker Containerization](#docker-containerization)
+  - [Docker Prerequisites](#docker-prerequisites)
+  - [Running with Docker](#running-with-docker)
+  - [Docker Environment Variables](#docker-environment-variables)
+  - [Managing Docker Containers](#managing-docker-containers)
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
@@ -65,6 +70,9 @@ A web application for managing family chores with a points/rewards system. This 
 - **UI Components:**
   - [Radix UI](https://www.radix-ui.com/): A set of unstyled, accessible UI components.
   - [Lucide Icons](https://lucide.dev/): A collection of beautiful, hand-crafted icons.
+- **Containerization:**
+  - [Docker](https://www.docker.com/): Platform for developing, shipping, and running applications in containers.
+  - [Docker Compose](https://docs.docker.com/compose/): Tool for defining and running multi-container Docker applications.
 
 ## Getting Started
 
@@ -125,6 +133,128 @@ After starting the application for the first time:
 4.  Set up rewards.
 5.  Configure point-to-money conversion rates in settings.
 
+## Docker Containerization
+
+The application is containerized using Docker, which simplifies deployment and ensures consistency across different environments.
+
+### Docker Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) (version 20.10.0 or higher)
+- [Docker Compose](https://docs.docker.com/compose/install/) (version 2.0.0 or higher)
+
+### Running with Docker
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/jealarue/family-chore-management-app.git
+   cd family-chore-management-app
+   ```
+
+2. Create a `.env` file in the root directory with at least the following variables:
+
+   ```
+   NEXTAUTH_SECRET="your-secret-key"
+   NEXTAUTH_URL="http://localhost:3000"
+   ```
+
+3. Build and start the containers:
+
+   ```bash
+   docker compose up -d --build
+   ```
+
+   This command builds the Docker images and starts the containers in detached mode.
+
+4. The application will be available at [http://localhost:3000](http://localhost:3000).
+
+5. The PostgreSQL database will be accessible on port 5432.
+
+### Docker Environment Variables
+
+The Docker setup uses the following environment variables:
+
+- **App Container:**
+  - `DATABASE_URL`: Connection string for the PostgreSQL database (default: `postgresql://postgres:postgres@db:5432/familychores`)
+  - `NEXTAUTH_SECRET`: Secret key for NextAuth.js (required)
+  - `NEXTAUTH_URL`: URL of your application (default: `http://localhost:3000`)
+
+- **Database Container:**
+  - `POSTGRES_USER`: PostgreSQL username (default: `postgres`)
+  - `POSTGRES_PASSWORD`: PostgreSQL password (default: `postgres`)
+  - `POSTGRES_DB`: PostgreSQL database name (default: `familychores`)
+
+You can override these defaults by setting them in your `.env` file or by passing them directly to the `docker compose up` command.
+
+### Managing Docker Containers
+
+- **Start the containers:**
+
+  ```bash
+  docker compose up -d
+  ```
+
+- **Stop the containers:**
+
+  ```bash
+  docker compose down
+  ```
+
+- **View container logs:**
+
+  ```bash
+  # View logs for all containers
+  docker compose logs
+
+  # View logs for a specific container
+  docker compose logs app
+  docker compose logs db
+
+  # Follow logs in real-time
+  docker compose logs -f
+  ```
+
+- **Restart containers:**
+
+  ```bash
+  docker compose restart
+  ```
+
+- **Rebuild and restart containers (after code changes):**
+
+  ```bash
+  docker compose up -d --build
+  ```
+
+- **Access the database directly:**
+
+  ```bash
+  docker exec -it family-chore-db psql -U postgres -d familychores
+  ```
+
+- **Run Prisma commands:**
+
+  ```bash
+  # Generate Prisma client
+  docker exec -it family-chore-app npx prisma generate
+
+  # Run database migrations
+  docker exec -it family-chore-app npx prisma migrate dev
+
+  # Open Prisma Studio
+  docker exec -it family-chore-app npx prisma studio
+  ```
+
+- **Clean up unused resources:**
+
+  ```bash
+  # Remove stopped containers
+  docker compose down
+
+  # Remove volumes (will delete database data)
+  docker compose down -v
+  ```
+
 ## Usage
 
 Provide examples of how to use the app. Include screenshots or GIFs to demonstrate the app's functionality.
@@ -145,4 +275,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Contact
 
 Jesse LaRue - jesse.green81@gmail.com
-# family_chore_management_app

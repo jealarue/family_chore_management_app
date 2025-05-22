@@ -87,7 +87,7 @@ A web application for managing family chores with a points/rewards system. This 
 
     ```bash
     git clone https://github.com/jealarue/family_chore_management_app.git
-    cd family-chore-management-app
+    cd Family_Chore_Management_app
     ```
 2.  Install dependencies:
 
@@ -148,7 +148,7 @@ The application is containerized using Docker, which simplifies deployment and e
 
    ```bash
    git clone https://github.com/jealarue/family_chore_management_app.git
-   cd family-chore-management-app
+   cd Family_Chore_Management_app
    ```
 
 2. Create a `.env` file in the root directory with at least the following variables:
